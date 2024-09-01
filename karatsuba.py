@@ -3,7 +3,18 @@ import sys
 sys.setrecursionlimit(10**9)
 
 def main():
-    print(karatsuba(sys.argv[1], sys.argv[2]))
+    # print(karatsuba(sys.argv[1], sys.argv[2]))
+    with open("testes.txt", "r") as testes:
+        iteration = 0
+        for line in testes:
+            iteration += 1
+            entrada1, entrada2 = line.split(' -> ')[0].split(' ')
+            res = line.split(' -> ')[1].strip()
+            if karatsuba(entrada1, entrada2) != res:
+                print(f"Error: {entrada1} * {entrada2} = {res}")
+                return
+            else:
+                print(f"Success: {iteration}")
 
 def karatsuba(strArg1: str, strArg2: str) -> str:
     if len(strArg1) == 1 and len(strArg2) == 1:
@@ -11,21 +22,17 @@ def karatsuba(strArg1: str, strArg2: str) -> str:
 
     strArg1, strArg2 = sameEvenLen(strArg1, strArg2)
 
-    a1: str = strArg1[:len(strArg1)//2]
-    a2: str = strArg1[len(strArg1)//2:]
-    b1: str = strArg2[:len(strArg2)//2]
-    b2: str = strArg2[len(strArg2)//2:]
+    a1 = strArg1[:len(strArg1)//2]
+    a2 = strArg1[len(strArg1)//2:]
+    b1 = strArg2[:len(strArg2)//2]
+    b2 = strArg2[len(strArg2)//2:]
 
-    left: str = karatsuba(a1, b1)
-    right: str = karatsuba(a2, b2)
-    middle: str = karatsuba(sum(a1, a2), sum(b1, b2))
+    left = karatsuba(a1, b1)
+    right = karatsuba(a2, b2)
+    middle = karatsuba(sum(a1, a2), sum(b1, b2))
 
-    # Handle shifting and subtraction correctly
-    leftShift = left + '0' * len(strArg1)
-    middleValue = sum(middle, sum(left, right), True)
-    middleShift = middleValue + '0' * (len(strArg1) // 2)
-
-    return sum(sum(leftShift, middleShift), right)
+    result = sum(sum(left + '0' * len(strArg1), sum(middle, sum(left, right), True) + '0' * (len(strArg1) // 2)), right).lstrip('0')
+    return result if result else '0'
 
 def sameEvenLen(strArg1: str, strArg2: str):
     strArg1, strArg2 = sameLen(strArg1, strArg2)
@@ -47,8 +54,8 @@ def sum(strArg1: str, strArg2: str, isSub: bool = False) -> str:
     strArg1, strArg2 = sameLen(strArg1, strArg2)
     if isSub:
         strArg2 = complementOf1(strArg2)
-    result: str = ''
-    carry: str = '0'
+    result = ''
+    carry = '0'
     for i in range(len(strArg1)-1, -1, -1):
         if carry == '0':
             if strArg1[i] == '1' and strArg2[i] == '1':
@@ -75,7 +82,7 @@ def sum(strArg1: str, strArg2: str, isSub: bool = False) -> str:
     return result if carry == '0' else carry + result    
 
 def complementOf1(strArg: str) -> str:
-    result: str = ''
+    result = ''
     for i in range(len(strArg)):
         result += '1' if strArg[i] == '0' else '0'
     return result
