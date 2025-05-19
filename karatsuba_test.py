@@ -3,7 +3,16 @@ import sys
 sys.setrecursionlimit(10**9)
 
 def main():
-    print(karatsuba(sys.argv[1], sys.argv[2]))
+    with open('testes.txt', 'r') as testes:
+        i = 0
+        for line in testes:
+            i += 1
+            strArg1, strArg2 = line.split(' -> ')[0].split(' ')
+            result = line.split(' -> ')[1].rstrip()
+            if karatsuba(strArg1, strArg2) != result:
+                print(f'Failed test {i}')
+            else:
+                print(f'Test {i} passed')
 
 def karatsuba(strArg1: str, strArg2: str) -> str:
     if len(strArg1) == 1 and len(strArg2) == 1:
